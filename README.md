@@ -1,2 +1,18 @@
 # Minesweeper
-Exploration of how data collection and inference can inform future action and future data collection
+In the game minesweeper, you are presented with a square grid landscape of cells. Hidden in some of the cells are ‘mines’. At every turn, you may select a cell to uncover. At this point, one of two things will happen: if there is a mine at that location, it explodes and you lose the game; if there is not a mine at that location, it reveals a number, indicating the number of adjacent cells where there are mines. If the cell reveals 0, all the surrounding 8 cells are empty of mines. If the cell reveals 8, all 8 adjacent cells must have mines. For any value in between, for instance 4, you know that half of the adjacent cells have mines, but you cannot be sure by this clue alone which half are dangerous and which half are safe. The goal of the game is to identify the locations of all the mines (if possible); by collecting clues and information, you can begin to infer which cells are dangerous and which are safe, and use the safe cells to collect more information. This process is iterated until, hopefully, all cells are either uncovered, marked as clear, or marked as mined. The goal of this project is to write a program to play MineSweeper - that is, a program capable of sequentially deciding what cells to check, and using the resulting information to direct future action.<br/>
+
+Traditionally, the game ends whenever the agent queries a cell with a mine in it - a final score being assessed in terms of number of mines safely identified. However, extend your agent in the following way: if it queries a mine cell, the mine goes off, but the agent can continue, using the fact that a mine was discovered there to update its knowledge base. In this way the game can continue until the entire board is revealed - a final score being assessed in terms of number of mines safely identified out of the total number of mines.<br/>
+
+Implemented the game using the following strategies:<br/>
+#### Baseline
+• If, for a given cell, the total number of mines (the clue) minus the number of revealed mines is the number of hidden neighbors, every hidden neighbor is a mine.<br/>
+• If, for a given cell, the total number of safe neighbors (8 - clue) minus the number of revealed safe neighbors is the number of hidden neighbors, every hidden neighbor is safe.<br/>
+• If a cell is identified as safe, reveal it and update your information.<br/>
+• If a cell is identified as a mine, mark it and update your information.<br/>
+• If no hidden cell can be conclusively identified as a mine or safe, pick a cell to reveal at random.<br/>
+#### Baseline with Inference
+Adds another layer over the baseline strategy wherein we make inferences by maintaining a knowledge base using the clues revealed at each step. <br/>
+#### Baseline with Inference for Uncertain Information
+• When a cell is selected to be uncovered, if the cell is ‘clear’ you only reveal a clue about the surrounding cells with some probability. In this case, the information you receive is accurate, but it is uncertain when you will receive the information.<br/>
+• When a cell is selected to be uncovered, the revealed clue is less than or equal to the true number of surrounding mines (chosen uniformly at random). In this case, the clue has some probability of underestimating the number of surrounding mines. Clues are always optimistic.<br/>
+• When a cell is selected to be uncovered, the revealed clue is greater than or equal to the true number of surrounding mines (chosen uniformly at random). In this case, the clue has some probability of overestimating the number of surrounding mines. Clues are always cautious.<br/>
